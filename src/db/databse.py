@@ -1,6 +1,7 @@
 #   Database functions for creating and inserting into the SQLite database
 #   It connects to the SQLite database and creates a table if it doesn't exist
 import sqlite3
+import logging
 
 class Database:
     def __init__(self, database_path):
@@ -12,10 +13,15 @@ class Database:
                             (case_number TEXT, sale_date TEXT, property_address TEXT, status TEXT)''')
         self.connection.commit()
 
+    # Added Error handling to prevent duplicate entries
     def insert_auction(self, item):
-        self.connection.execute('INSERT INTO auctions (case_number, sale_date, property_address, status) VALUES (?, ?, ?, ?)',
-                                (item['case_number'], item['sale_date'], item['property_address'], item['status']))
-        self.connection.commit()
+        try:
+            self.connection.execute('INSERT INTO auctions (case_number, sale_date, property_address, status) VALUES (?, ?, ?, ?)',
+                                    (item['case_number'], item['sale_date'], item['property_address'], item['status']))
+            self.connection.commit()
+        except sqlite3.IntegrityError as e:
+            logging.error(f"Error inserting data: {e}")
 
     def close(self):
         self.connection.close()
+
