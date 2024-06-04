@@ -1,5 +1,11 @@
 # Implements tests case for the scraper module
 import unittest
+import sys
+import os
+
+# Path Adjusted to include the src directory where the scraper module is located
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+
 from scraper.scraper import parse_page
 
 class TestScraper(unittest.TestCase):
@@ -9,13 +15,13 @@ class TestScraper(unittest.TestCase):
         <html>
             <body>
                 <table>
-                    <tr class="salesSearchResult">
+                    <tr class="salesSearchResult" data-target="sale-details">
                         <td data-label="Case #">12345</td>
                         <td data-label="Sale Date">01/01/2024</td>
                         <td data-label="Property Address">123 Main St</td>
                         <td data-label="Status">Active</td>
                     </tr>
-                    <tr class="salesSearchResult">
+                    <tr class="salesSearchResult" data-target="sale-details">
                         <td data-label="Case #">67890</td>
                         <td data-label="Sale Date">02/02/2024</td>
                         <td data-label="Property Address">456 Elm St</td>
@@ -26,6 +32,7 @@ class TestScraper(unittest.TestCase):
         </html>
         '''
         results = parse_page(html)
+        print("Parsed Results:", results)  # Debug: print the results
         self.assertEqual(len(results), 2)  # Expecting two entries
         self.assertEqual(results[0]['case_number'], '12345')
         self.assertEqual(results[0]['sale_date'], '01/01/2024')
