@@ -28,7 +28,7 @@ def main():
     url_base = 'https://salesweb.civilview.com/Sales/SalesSearch?countyId=9'
     # Adjust the URL as per actual page, but this one is for Morris County, NJ foreclosure auctions
 
-    results = scrape_all_pages(url_base)
+    results = parse_page(fetch_page(url_base))
     db = Database('auctions.db')
     for result in results:
         db.insert_auction(result)

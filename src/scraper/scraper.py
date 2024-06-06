@@ -39,17 +39,34 @@ def parse_page(html):
     auctions = soup.find_all('tr', {'data-target': 'sale-details'})
     data = []
     for auction in auctions:
-        case_number = clean_text(auction.find('td', {'data-label': 'Case #'}).text) # data cleanup to avoid any whitespace
-        sale_date = convert_date_format(clean_text(auction.find('td', {'data-label': 'Sale Date'}).text)) # data cleanup conforming to date format
+        case_number = clean_text(auction.find('td', {'data-label': 'Case #'}).text)
+        sale_date = convert_date_format(clean_text(auction.find('td', {'data-label': 'Sale Date'}).text))
         property_address = clean_text(auction.find('td', {'data-label': 'Property Address'}).text)
         status = clean_text(auction.find('td', {'data-label': 'Status'}).text)
+        details_link = soup.find('a', text='Details')['href']  # 'Details' is the link text
+        details_url = f"https://salesweb.civilview.com{details_link}"
+
         data.append({
             'case_number': case_number,
             'sale_date': sale_date,
             'property_address': property_address,
-            'status': status
+            'status': status,
+            'details_url': details_url
         })
     return data
+
+def fetch_details(url):
+    html = fetch_page(url)
+    if html:
+        soup = BeautifulSoup(html, 'html.parser')
+        attorney_name = clean_text(soup.find('span', {'id': 'attorneyName'}).text)  # Example ID
+        plaintiff_name = clean_text(soup.find('span', {'id': 'plaintiffName'}).text)  # Example ID
+        return {
+            'attorney_name': attorney_name,
+            'plaintiff_name': plaintiff_name
+        }
+    else:
+        return {}
 
 def clean_text(text):
     """Strip whitespace and handle any other text cleanup."""

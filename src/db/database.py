@@ -9,9 +9,17 @@ class Database:
         self.create_table()
 
     def create_table(self):
-        self.connection.execute('''CREATE TABLE IF NOT EXISTS auctions
-                            (case_number TEXT, sale_date TEXT, property_address TEXT, status TEXT)''')
-        self.connection.commit()
+    self.connection.execute('''
+        CREATE TABLE IF NOT EXISTS auctions (
+            case_number TEXT, 
+            sale_date TEXT, 
+            property_address TEXT, 
+            status TEXT, 
+            attorney_name TEXT, 
+            plaintiff_name TEXT
+        )
+    ''')
+    self.connection.commit()
 
     # Added Error handling to prevent duplicate entries
     def insert_auction(self, item):
