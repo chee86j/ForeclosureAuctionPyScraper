@@ -1,10 +1,11 @@
-import requests
-import time
+import aiohttp
+import asyncio
 import logging
 from random import choice
 from bs4 import BeautifulSoup
+from datetime import datetime
 
-# Configure logging to keep track of errors and events from scraper's activities
+# Configure logging
 logging.basicConfig(filename='scraper.log', level=logging.INFO,
                     format='%(asctime)s:%(levelname)s:%(message)s')
 
@@ -23,50 +24,52 @@ USER_AGENTS = [
     # Add more user agents as needed
 ]
 
-def fetch_page(url):
+async def fetch_page(session, url):
     headers = {'User-Agent': choice(USER_AGENTS)}
     try:
-        time.sleep(1)  # Sleep delay added to prevent flooding the server to prevent your IP from being blocked
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()  # Raises HTTPError for bad responses
-        return response.text
-    except requests.RequestException as e:
+        async with session.get(url, headers=headers, timeout=10) as response:
+            response.raise_for_status()  # Raises HTTPError for bad responses
+            return response.text
+    except (aiohttp.ClientError, aiohttp.http_exceptions.HttpProcessingError) as e:
         logging.error(f"Error fetching {url}: {e}")
         return None
 
-def parse_page(html):
-    soup = BeautifulSoup(html, 'html.parser')
-    auctions = soup.find_all('tr', {'data-target': 'sale-details'})
-    data = []
-    for auction in auctions:
-        case_number = clean_text(auction.find('td', {'data-label': 'Case #'}).text)
-        sale_date = convert_date_format(clean_text(auction.find('td', {'data-label': 'Sale Date'}).text))
-        property_address = clean_text(auction.find('td', {'data-label': 'Property Address'}).text)
-        status = clean_text(auction.find('td', {'data-label': 'Status'}).text)
-        details_link = soup.find('a', text='Details')['href']  # 'Details' is the link text
-        details_url = f"https://salesweb.civilview.com{details_link}"
-
-        data.append({
-            'case_number': case_number,
-            'sale_date': sale_date,
-            'property_address': property_address,
-            'status': status,
-            'details_url': details_url
-        })
-    return data
-
-def fetch_details(url):
-    html = fetch_page(url)
+async def parse_page(session, url):
+    html = await fetch_page(session, url)
     if html:
         soup = BeautifulSoup(html, 'html.parser')
-        attorney_name = clean_text(soup.find('span', {'id': 'attorneyName'}).text)  # Example ID
-        plaintiff_name = clean_text(soup.find('span', {'id': 'plaintiffName'}).text)  # Example ID
+        auctions = soup.find_all('tr', {'data-target': 'sale-details'})
+        data = []
+        for auction in auctions:
+            case_number = clean_text(auction.find('td', {'data-label': 'Case #'}).text)
+            sale_date = convert_date_format(clean_text(auction.find('td', {'data-label': 'Sale Date'}).text))
+            property_address = clean_text(auction.find('td', {'data-label': 'Property Address'}).text)
+            status = clean_text(auction.find('td', {'data-label': 'Status'}).text)
+            details_link = auction.find('a', text='Details')['href']  # 'Details' is the link text
+            details_url = f"https://salesweb.civilview.com{details_link}"
+
+            details_data = await fetch_details(session, details_url)
+            data.append({
+                'case_number': case_number,
+                'sale_date': sale_date,
+                'property_address': property_address,
+                'status': status,
+                **details_data
+            })
+        return data
+    return []
+
+async def fetch_details(session, url):
+    details = await fetch_page(session, url)
+    if details:
+        soup = BeautifulSoup(details, 'html.parser')
+        attorney_name = clean_text(soup.find('span', {'id': 'attorneyName'}).text) if soup.find('span', {'id': 'attorneyName'}) else 'N/A'
+        plaintiff_name = clean_text(soup.find('span', {'id': 'plaintiffName'}).text) if soup.find('span', {'id': 'plaintiffName'}) else 'N/A'
         return {
             'attorney_name': attorney_name,
             'plaintiff_name': plaintiff_name
         }
-    else:
-        return {}
+    return {}
 
 def clean_text(text):
     """Strip whitespace and handle any other text cleanup."""
