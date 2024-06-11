@@ -24,11 +24,14 @@ class Database:
     # Added Error handling to prevent duplicate entries
     def insert_auction(self, item):
         try:
-            self.connection.execute('INSERT INTO auctions (case_number, sale_date, property_address, status) VALUES (?, ?, ?, ?)',
-                                    (item['case_number'], item['sale_date'], item['property_address'], item['status']))
+            self.connection.execute('''
+                INSERT INTO auctions (case_number, sale_date, property_address, status, attorney_name, plaintiff_name)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (item['case_number'], item['sale_date'], item['property_address'], item['status'], item.get('attorney_name', 'Not Available'), 
+            item.get('plaintiff_name', 'Not Available')))
             self.connection.commit()
-        except sqlite3.IntegrityError as e:
-            logging.error(f"Error inserting data: {e}")
+        except sqlite3.IntegrityError:
+            logging.error(f"Duplicate entry found for case number: {item['case_number']}")
 
     def close(self):
         self.connection.close()

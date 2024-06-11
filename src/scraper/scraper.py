@@ -1,5 +1,4 @@
 import aiohttp
-import asyncio
 import logging
 from random import choice
 from bs4 import BeautifulSoup

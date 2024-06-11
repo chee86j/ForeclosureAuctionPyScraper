@@ -1,5 +1,6 @@
 # Entry point for app to run the scraper and store the data in the database
 # & paginated data
+import aiohttp
 import asyncio
 from scraper.scraper import parse_page
 from db.database import Database
