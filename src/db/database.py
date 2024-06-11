@@ -5,34 +5,43 @@ import logging
 
 class Database:
     def __init__(self, database_path):
-        self.connection = sqlite3.connect(database_path)
-        self.create_table()
+        self.database_path = database_path
+        self.connection = self.create_connection()
+
+    def create_connection(self):
+        try:
+            return sqlite3.connect(self.database_path)
+        except sqlite3.Error as e:
+            logging.error(f"Error connecting to database: {e}")
+            return None
 
     def create_table(self):
-        self.connection.execute('''
-            CREATE TABLE IF NOT EXISTS auctions (
-                case_number TEXT, 
-                sale_date TEXT, 
-                property_address TEXT, 
-                status TEXT, 
-                attorney_name TEXT, 
-                plaintiff_name TEXT
-            )
-        ''')
-        self.connection.commit()
+        try:
+            with self.connection:
+                self.connection.execute('''
+                    CREATE TABLE IF NOT EXISTS auctions (
+                        case_number TEXT, 
+                        sale_date TEXT, 
+                        property_address TEXT, 
+                        status TEXT, 
+                        attorney_name TEXT, 
+                        plaintiff_name TEXT
+                    )
+                ''')
+        except sqlite3.Error as e:
+            logging.error(f"Error creating table: {e}")
 
-    # Added Error handling to prevent duplicate entries
     def insert_auction(self, item):
         try:
-            self.connection.execute('''
-                INSERT INTO auctions (case_number, sale_date, property_address, status, attorney_name, plaintiff_name)
-                VALUES (?, ?, ?, ?, ?, ?)
-            ''', (item['case_number'], item['sale_date'], item['property_address'], item['status'], item.get('attorney_name', 'Not Available'), 
-            item.get('plaintiff_name', 'Not Available')))
-            self.connection.commit()
+            with self.connection:
+                self.connection.execute('''
+                    INSERT INTO auctions (case_number, sale_date, property_address, status, attorney_name, plaintiff_name)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ''', (item['case_number'], item['sale_date'], item['property_address'], item['status'], item.get('attorney_name', 'Not Available'), 
+                item.get('plaintiff_name', 'Not Available')))
         except sqlite3.IntegrityError:
             logging.error(f"Duplicate entry found for case number: {item['case_number']}")
 
     def close(self):
-        self.connection.close()
-
+        if self.connection:
+            self.connection.close()

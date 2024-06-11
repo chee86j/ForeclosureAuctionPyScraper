@@ -27,8 +27,10 @@ provides the data backbone you need.
 
 ## Technologies & Libraries
 
-1.  BeautifulSoup and Requests libraries to scrape HTML elements
-2.  SQLite for data storage
+1. `BeautifulSoup` for parsing HTML.
+2. `aiohttp` for asynchronous web requests.
+3. `SQLite` for data storage.
+4. Python's `logging` module for error logging and debugging.
 
 ## Installation
 
@@ -37,7 +39,7 @@ provides the data backbone you need.
     -MacOS/Linux: source venv/bin/activate
     -Windows: venv\Scripts\activate
 3.  Install the required packages
-    -pip install requests beautifulsoup4
+    -pip install aiohttp beautifulsoup4
 
 ## Running the Scraper
 
