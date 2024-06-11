@@ -32,6 +32,16 @@ provides the data backbone you need.
 3. `SQLite` for data storage.
 4. Python's `logging` module for error logging and debugging.
 
+## Prerequisites
+
+Before running the scraper, ensure you have the following installed:
+1. **Python**: Ensure Python 3.x is installed on your system. [python.org](https://www.python.org/downloads/).
+2. **SQLite**: Make sure SQLite is installed on your system:
+   - [SQLite Download page](https://sqlite.org/download.html) and follow the installation instructions.
+     Look under'Precompiled Binaries for Windows' for the [DLL]
+   - Verify installation by running `sqlite3` in your terminal. If installed, you should see the SQLite version and a command-line interface.
+
+
 ## Installation
 
 1.  Clone the repository
