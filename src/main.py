@@ -2,7 +2,6 @@
 # & paginated data
 import aiohttp
 import asyncio
-import aiohttp
 from aiolimiter import AsyncLimiter
 from scraper.scraper import parse_page
 from db.database import Database
