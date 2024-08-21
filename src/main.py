@@ -2,6 +2,8 @@
 # & paginated data
 import aiohttp
 import asyncio
+import aiohttp
+from aiolimiter import AsyncLimiter
 from scraper.scraper import parse_page
 from db.database import Database
 import logging
@@ -15,7 +17,9 @@ async def scrape_all_pages(base_url, session):
     page = 1
     data_collected = []
     while True:
-        url = f"{base_url}&page={page}"
+        await limiter.acquire() # Limit the number of concurrent requests by waiting for a token
+        url = f"{base_url}&page={page}" # Adjust the URL as per actual page
+        logging.info(f"Scraping Page {page} at {url}")
         page_data = await parse_page(session, url)
         if page_data:
             data_collected.extend(page_data)
@@ -28,9 +32,9 @@ async def scrape_all_pages(base_url, session):
 async def main():
     url_base = 'https://salesweb.civilview.com/Sales/SalesSearch?countyId=9'
         # Adjust the URL as per actual page, but this one is for Morris County, NJ foreclosure auctions
-
+    limiter = AsyncLimiter(1, 1) # Limit to 1 request per sec
     async with aiohttp.ClientSession() as session:
-        results = await scrape_all_pages(url_base, session)
+        results = await scrape_all_pages(url_base, session, limiter)
         db = Database('auctions.db')
         for result in results:
             db.insert_auction(result)
