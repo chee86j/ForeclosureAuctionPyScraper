@@ -13,7 +13,7 @@ logging.basicConfig(filename='main.log', level=logging.INFO,
                     format='%(asctime)s:%(levelname)s:%(message)s')
 
 # Paginate through the results and scrape each page
-async def scrape_all_pages(base_url, session):
+async def scrape_all_pages(base_url, session, limiter):
     page = 1
     data_collected = []
     while True:
@@ -28,6 +28,8 @@ async def scrape_all_pages(base_url, session):
             logging.info(f"No data found on page {page}. Ending scrape.")
             break
     return data_collected
+
+limiter = AsyncLimiter(1, 1) # Limit to 1 request per sec
 
 async def main():
     url_base = 'https://salesweb.civilview.com/Sales/SalesSearch?countyId=9'

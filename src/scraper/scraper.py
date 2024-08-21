@@ -49,6 +49,7 @@ async def parse_page(session, url):
 
             details_data = await fetch_details(session, details_url)
             data.append({
+                'details_url': details_url,
                 'case_number': case_number,
                 'sale_date': sale_date,
                 'property_address': property_address,
@@ -57,6 +58,7 @@ async def parse_page(session, url):
             })
         return data
     return []
+
 
 async def fetch_details(session, url):
     details = await fetch_page(session, url)

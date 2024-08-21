@@ -20,6 +20,7 @@ class Database:
             with self.connection:
                 self.connection.execute('''
                     CREATE TABLE IF NOT EXISTS auctions (
+                        details_url TEXT,
                         case_number TEXT, 
                         sale_date TEXT, 
                         property_address TEXT, 
@@ -35,9 +36,9 @@ class Database:
         try:
             with self.connection:
                 self.connection.execute('''
-                    INSERT INTO auctions (case_number, sale_date, property_address, status, attorney_name, plaintiff_name)
-                    VALUES (?, ?, ?, ?, ?, ?)
-                ''', (item['case_number'], item['sale_date'], item['property_address'], item['status'], item.get('attorney_name', 'Not Available'), 
+                    INSERT INTO auctions (details_url, case_number, sale_date, property_address, status, attorney_name, plaintiff_name)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                ''', (item.get('details_url'), item['case_number'], item['sale_date'], item['property_address'], item['status'], item.get('attorney_name', 'Not Available'), 
                 item.get('plaintiff_name', 'Not Available')))
         except sqlite3.IntegrityError:
             logging.error(f"Duplicate entry found for case number: {item['case_number']}")
