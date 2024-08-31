@@ -2,8 +2,7 @@
 
 Welcome to the Foreclosure Auctions Python Scraper — a premier tool for
 seamlessly gathering data from government foreclosure auctions sites.
-Powered by Python, this robust scraper harnesses the capabilities of
-the BeautifulSoup and Requests libraries to meticulously parse and
+Powered by Python, this robust scraper leverages the capabilities of Selenium, BeautifulSoup, and aiohttp libraries to meticulously parse and
 extract crucial auction data from websites, starting with our example
 site at "https://salesweb.civilview.com/Sales/SalesSearch?countyId=9"
 for Morris County, New Jersey.
@@ -38,8 +37,9 @@ provides the data backbone you need.
 2.  `BeautifulSoup` for parsing HTML and XML documents.
 3.  `aiohttp` for asynchronous HTTP requests.
 4.  `Asyncio` for managing asynchronous I/O operations.
-5.  `SQLite` for storing and managing the extracted data.
-6.  Pythong's `logging` module for error logging & debugging.
+5.  `AsyncLimiter` for rate-limiting asynchronous operations.
+6.  `SQLite` for storing and managing the extracted data.
+7.  Python's `logging` module for error logging & debugging.
 
 ## Prerequisites
 
