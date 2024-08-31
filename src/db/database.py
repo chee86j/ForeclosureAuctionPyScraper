@@ -3,46 +3,59 @@
 import sqlite3
 import logging
 
-class Database:
-    def __init__(self, database_path):
-        self.database_path = database_path
-        self.connection = self.create_connection()
+# Configure logging
+logging.basicConfig(filename='database.log', level=logging.INFO,
+                    format='%(asctime)s:%(levelname)s:%(message)s')
 
-    def create_connection(self):
-        try:
-            return sqlite3.connect(self.database_path)
-        except sqlite3.Error as e:
-            logging.error(f"Error connecting to database: {e}")
-            return None
+DATABASE_NAME = 'auction_data.db'
 
-    def create_table(self):
-        try:
-            with self.connection:
-                self.connection.execute('''
-                    CREATE TABLE IF NOT EXISTS auctions (
-                        details_url TEXT,
-                        case_number TEXT, 
-                        sale_date TEXT, 
-                        property_address TEXT, 
-                        status TEXT, 
-                        attorney_name TEXT, 
-                        plaintiff_name TEXT
-                    )
-                ''')
-        except sqlite3.Error as e:
-            logging.error(f"Error creating table: {e}")
+def connect_db():
+    """Establish a connection to the SQLite database."""
+    try:
+        conn = sqlite3.connect(DATABASE_NAME)
+        logging.info(f"Connected to the database: {DATABASE_NAME}")
+        return conn
+    except sqlite3.Error as e:
+        logging.error(f"Database connection error: {e}")
+        return None
 
-    def insert_auction(self, item):
-        try:
-            with self.connection:
-                self.connection.execute('''
-                    INSERT INTO auctions (details_url, case_number, sale_date, property_address, status, attorney_name, plaintiff_name)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                ''', (item.get('details_url'), item['case_number'], item['sale_date'], item['property_address'], item['status'], item.get('attorney_name', 'Not Available'), 
-                item.get('plaintiff_name', 'Not Available')))
-        except sqlite3.IntegrityError:
-            logging.error(f"Duplicate entry found for case number: {item['case_number']}")
+def create_table(conn):
+    """Create the auctions table if it doesn't exist."""
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS auctions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                detail_link TEXT,
+                sheriff_number TEXT,
+                status_date TEXT,
+                plaintiff TEXT,
+                defendant TEXT,
+                address TEXT
+            )
+        ''')
+        conn.commit()
+        logging.info("auctions table created or already exists.")
+    except sqlite3.Error as e:
+        logging.error(f"Error creating table: {e}")
 
-    def close(self):
-        if self.connection:
-            self.connection.close()
+def insert_data(conn, data):
+    """Insert data into the auctions table."""
+    try:
+        cursor = conn.cursor()
+        cursor.executemany('''
+            INSERT INTO auctions (detail_link, sheriff_number, status_date, plaintiff, defendant, address)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', [(entry['detail_link'], entry['sheriff_number'], entry['status_date'], entry['plaintiff'], entry['defendant'], entry['address']) for entry in data])
+        conn.commit()
+        logging.info(f"Inserted {cursor.rowcount} rows into the auctions table.")
+    except sqlite3.Error as e:
+        logging.error(f"Error inserting data: {e}")
+
+def close_db(conn):
+    """Close the database connection."""
+    if conn:
+        conn.close()
+        logging.info("Database connection closed.")
+
+

@@ -1,0 +1,6 @@
+2024-08-31 17:02:05,979:WARNING:No data scraped.
+2024-08-31 17:03:18,253:WARNING:No data scraped.
+2024-08-31 18:19:43,676:INFO:Connected to the database: auction_data.db
+2024-08-31 18:19:43,683:INFO:auctions table created or already exists.
+2024-08-31 18:19:43,685:INFO:Inserted 128 rows into the auctions table.
+2024-08-31 18:19:43,685:INFO:Database connection closed.
