@@ -1,0 +1,8 @@
+# Ignore database files
+auction_data.db
+
+# Ignore CSV files
+*.csv
+
+# Ignore Python virtual environment directories
+venv/
