@@ -2,7 +2,8 @@
 
 Welcome to the Foreclosure Auctions Python Scraper — a premier tool for
 seamlessly gathering data from government foreclosure auctions sites.
-Powered by Python, this robust scraper leverages the capabilities of Selenium, BeautifulSoup, and aiohttp libraries to meticulously parse and
+Powered by Python, this robust scraper leverages the capabilities of
+Selenium, BeautifulSoup, and aiohttp libraries to meticulously parse and
 extract crucial auction data from websites, starting with our example
 site at "https://salesweb.civilview.com/Sales/SalesSearch?countyId=9"
 for Morris County, New Jersey.
@@ -17,9 +18,10 @@ provides the data backbone you need.
 
 1.  **Reliable Data Extraction**: Automatically scrapes detailed auction data
     including case numbers, sale dates, property addresses, and status.
-2.  **Efficient Pagination Handling**: Capable of navigating through multiple pages to
-    collect all available listings.
-3.  **Detailed Data Access**: Fetches additional details from each listing's 'Details'
+2.  **Efficient Pagination Handling**: Capable of navigating through multiple pages
+    to collect all available listings.
+3.  **Detailed Data Access**: Fetches additional details from each listing's
+    'Details'
     page, extracting specific information like attorney and plaintiff names.
 4.  **Advanced Web Scraping with Selenium**: Uses Selenium to handle complex web
     interactions and dynamic content loading, ensuring accurate data extraction even
@@ -28,7 +30,9 @@ provides the data backbone you need.
     to get the data you need.
 6.  **Efficient Data Storage**: Utilizes SQLite, a lightweight database solution,
     to store and manage the extracted data efficiently.
-7.  **Customizable and Expandable**: Designed with modularity in mind, allowing
+7.  **Export Data to CSV**: Easily export the scraped data from the SQLite database
+    to a CSV file for further analysis or reporting.
+8.  **Customizable and Expandable**: Designed with modularity in mind, allowing
     for easy updates and customization to cater to specific user needs.
 
 ## Technologies & Libraries
@@ -40,6 +44,7 @@ provides the data backbone you need.
 5.  `AsyncLimiter` for rate-limiting asynchronous operations.
 6.  `SQLite` for storing and managing the extracted data.
 7.  Python's `logging` module for error logging & debugging.
+8.  `Pandas` for exporting data to CSV files.
 
 ## Prerequisites
 
@@ -52,10 +57,10 @@ Before running the scraper, ensure you have the following installed:
      Look under'Precompiled Binaries for Windows' for the [DLL]
    - Verify installation by running `sqlite3` in your terminal. If installed, you should see the SQLite version and a command-line interface.
 
-3. **Chrome Browser**: The scraper uses Chrome as the default browser for Selenium. Ensure you have Chrome
-   installed on your system.
+3. **Chrome Browser**: The scraper uses Chrome as the default browser for Selenium.
+   Ensure you have Chrome installed on your system.
 
-4. **ChromeDriver**: Download the ChromeDriver that matches your Chrome version from the
+4. **ChromeDriver**: Download the ChromeDriver that matches your Chrome version:
 
    - (https://sites.google.com/a/chromium.org/chromedriver/downloads).
    - After downloading, extract the file and note the path to the chromedriver executable.
@@ -66,7 +71,7 @@ Before running the scraper, ensure you have the following installed:
    - MacOS/Linux: `source venv/bin/activate`
    - Windows: `venv\Scripts\activate`
 7. Install required packages:
-   - `pip install selenium aiohttp beautifulsoup4 aiolimiter`
+   - `pip install selenium aiohttp beautifulsoup4 aiolimiter pandas`
 
 ## Running the Scraper within the Virtual Environment
 
