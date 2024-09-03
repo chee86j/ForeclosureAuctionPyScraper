@@ -32,7 +32,8 @@ provides the data backbone you need.
     to store and manage the extracted data efficiently.
 7.  **Export Data to CSV**: Easily export the scraped data from the SQLite database
     to a CSV file for further analysis or reporting.
-8.  **Customizable and Expandable**: Designed with modularity in mind, allowing
+8.  **Error Logging and Notifications**: Logs errors and sends email notifications
+9.  **Customizable and Expandable**: Designed with modularity in mind, allowing
     for easy updates and customization to cater to specific user needs.
 
 ## Technologies & Libraries
@@ -64,14 +65,26 @@ Before running the scraper, ensure you have the following installed:
 
    - (https://sites.google.com/a/chromium.org/chromedriver/downloads).
    - After downloading, extract the file and note the path to the chromedriver executable.
-   - Make sure the chromedriver file has executable permissions (on macOS/Linux, run chmod +x /path/to/chromedriver).
+   - Make sure the chromedriver file has executable permissions (on macOS/Linux, run `chmod +x /path/to/chromedriver`).
+   - Update the `CHROMEDRIVER_PATH` variable in `scraper.py` with the path to your chromedriver executable. (Line 23)
 
 5. Clone the repository.
 6. Set up a virtual environment:
    - MacOS/Linux: `source venv/bin/activate`
    - Windows: `venv\Scripts\activate`
 7. Install required packages:
-   - `pip install selenium aiohttp beautifulsoup4 aiolimiter pandas`
+   - `pip install selenium aiohttp beautifulsoup4 aiolimiter pandas python-dotenv`
+
+## Settin Up Your Environment Variables
+
+1. Create a `.env` file in the root directory of the project.
+2. Add the following environment variables to the `.env` file for email notifications:
+   - `SENDER_EMAIL=your_email@example.com`
+   - `RECIPIENT_EMAIL=recipient_email@example.com`
+   - `SMTP_SERVER=smtp.example.com`
+   - `SMTP_PORT=587`
+   - `SMTP_USERNAME=your_email@example.com`
+   - `SMTP_PASSWORD=your_password`
 
 ## Running the Scraper within the Virtual Environment
 

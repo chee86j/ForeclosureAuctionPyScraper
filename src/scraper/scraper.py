@@ -60,7 +60,8 @@ def parse_page_selenium(url):
                 'status_date': convert_date_format(cells[2].text.strip()) if len(cells) > 2 else None,
                 'plaintiff': cells[3].text.strip() if len(cells) > 3 else None,
                 'defendant': cells[4].text.strip() if len(cells) > 4 else None,
-                'address': cells[5].text.strip() if len(cells) > 5 else None
+                'address': cells[5].text.strip() if len(cells) > 5 else None,
+                'price': int(cells[6].text.strip().replace('$', '').replace(',', '')) if len(cells) > 6 else 0
             }
             data.append(row_data)
         
