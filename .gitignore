@@ -1,8 +1,48 @@
 # Ignore database files
 auction_data.db
 
-# Ignore CSV files
+# Ignore the .env file to prevent sensitive information from being exposed
+.env
+
+# Ignore SQLite database files
+*.db
+
+# Ignore CSV export files
 *.csv
 
-# Ignore Python virtual environment directories
+# Ignore log files
+*.log
+
+# Ignore Python bytecode files
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environment folder
 venv/
+ENV/
+env/
+
+# Ignore macOS-specific files
+.DS_Store
+
+# Ignore IDE/editor-specific files
+.idea/
+.vscode/
+*.swp
+
+# Ignore compiled C extensions
+*.so
+
+# Ignore coverage reports
+htmlcov/
+.coverage
+*.cover
+*.py,cover
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore test outputs
+*.out
+*.err
+
