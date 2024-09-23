@@ -1,7 +1,9 @@
+from apscheduler.schedulers.blocking import BlockingScheduler
 from src.scraper.scraper import parse_page_selenium
 from src.db.database import connect_db, create_table, insert_data, close_db
 from src.utils.send_email import send_email_notification
 import logging
+import os
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
@@ -10,7 +12,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(mess
 def meets_criteria(listing):
     return 'Morristown' in listing['address'] and int(listing.get('price', 0)) < 500000
 
-def main():
+def scheduled_job():
     # List of county URLs and corresponding names to scrape
     counties = {
         "Bergen County": "https://salesweb.civilview.com/Sales/SalesSearch?countyId=7&page=1",
@@ -23,10 +25,9 @@ def main():
         data = parse_page_selenium(url)
         if data:
             all_data.extend(data)  # Collect data from all counties
-
+            
             # Filter data based on criteria
             new_listings = [listing for listing in data if meets_criteria(listing)]
-        
             if new_listings:
                 listings_str = "\n\n".join([f"{listing['address']} - ${listing['price']}" for listing in new_listings])
                 logging.info(f"New listings found in {county_name}: {listings_str}")
@@ -34,7 +35,7 @@ def main():
                 send_email_notification(
                     subject=f'New Foreclosure Auction Listings in {county_name}',
                     body=f"New auction listings found in {county_name}:\n\n{listings_str}",
-                    to_email=os.getenv('RECIPIENT_EMAIL')  # Ensure recipient email is set in your .env
+                    to_email=os.getenv('RECIPIENT_EMAIL') # Ensure recipient email is set in your .env
                 )
 
     if all_data:
@@ -47,6 +48,11 @@ def main():
             logging.error("Failed to connect to the database.")
     else:
         logging.warning("No data scraped.")
+
+def main():
+    scheduler = BlockingScheduler()
+    scheduler.add_job(scheduled_job, 'interval', hours=24)  # Schedule the job to run every 24 hours
+    scheduler.start()
 
 if __name__ == "__main__":
     main()
