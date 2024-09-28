@@ -1,48 +1,24 @@
-# Ignore database files
+# Ignore the virtual environment folder (if named venv)
+venv/
+
+# Ignore compiled Python files and cache
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Ignore SQLite database files (if you want to exclude them)
+*.db
 auction_data.db
 
-# Ignore the .env file to prevent sensitive information from being exposed
-.env
-
-# Ignore SQLite database files
-*.db
-
-# Ignore CSV export files
+# Ignore CSV files (for scraped data export)
 *.csv
+exported_data.csv
+
+# Ignore environment variable file (.env)
+.env
 
 # Ignore log files
 *.log
 
-# Ignore Python bytecode files
-__pycache__/
-*.py[cod]
-
-# Ignore virtual environment folder
-venv/
-ENV/
-env/
-
-# Ignore macOS-specific files
+# Ignore OS-specific files (MacOS)
 .DS_Store
-
-# Ignore IDE/editor-specific files
-.idea/
-.vscode/
-*.swp
-
-# Ignore compiled C extensions
-*.so
-
-# Ignore coverage reports
-htmlcov/
-.coverage
-*.cover
-*.py,cover
-
-# Ignore Jupyter Notebook checkpoints
-.ipynb_checkpoints/
-
-# Ignore test outputs
-*.out
-*.err
-
