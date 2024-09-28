@@ -14,6 +14,23 @@ auction data without the hassle of manual research. Whether you're
 monitoring auction trends or preparing investment strategies, this tool
 provides the data backbone you need.
 
+---
+
+## ----------QUICK START---------- (Note: Format and Content will need to be Adjusted for each Data Scraping Source Site)
+
+1. Clone the repository.
+2. Set up a virtual environment:
+   - MacOS/Linux: source venv/bin/activate
+   - Windows: venv\Scripts\activate
+3. Install required packages:
+   - pip install selenium aiohttp beautifulsoup4 aiolimiter pandas
+4. Run the scraper:
+   - python src/main.py
+5. Export the scraped data to CSV:
+   - python export_to_csv.py
+
+---
+
 ## Key Features
 
 1.  **Reliable Data Extraction**: Automatically scrapes detailed auction data
@@ -32,20 +49,19 @@ provides the data backbone you need.
     to store and manage the extracted data efficiently.
 7.  **Export Data to CSV**: Easily export the scraped data from the SQLite database
     to a CSV file for further analysis or reporting.
-8.  **Error Logging and Notifications**: Logs errors and sends email notifications
-9.  **Customizable and Expandable**: Designed with modularity in mind, allowing
+8.  **Customizable and Expandable**: Designed with modularity in mind, allowing
     for easy updates and customization to cater to specific user needs.
 
 ## Technologies & Libraries
 
-1.  `Selenium` for automating web browser interactions.
-2.  `BeautifulSoup` for parsing HTML and XML documents.
-3.  `aiohttp` for asynchronous HTTP requests.
-4.  `Asyncio` for managing asynchronous I/O operations.
-5.  `AsyncLimiter` for rate-limiting asynchronous operations.
-6.  `SQLite` for storing and managing the extracted data.
-7.  Python's `logging` module for error logging & debugging.
-8.  `Pandas` for exporting data to CSV files.
+1.  Selenium for automating web browser interactions.
+2.  BeautifulSoup for parsing HTML and XML documents.
+3.  aiohttp for asynchronous HTTP requests.
+4.  Asyncio for managing asynchronous I/O operations.
+5.  AsyncLimiter for rate-limiting asynchronous operations.
+6.  SQLite for storing and managing the extracted data.
+7.  Python's logging module for error logging & debugging.
+8.  Pandas for exporting data to CSV files.
 
 ## Prerequisites
 
@@ -56,7 +72,7 @@ Before running the scraper, ensure you have the following installed:
 
    - [SQLite Download page](https://sqlite.org/download.html) and follow the installation instructions.
      Look under'Precompiled Binaries for Windows' for the [DLL]
-   - Verify installation by running `sqlite3` in your terminal. If installed, you should see the SQLite version and a command-line interface.
+   - Verify installation by running sqlite3 in your terminal. If installed, you should see the SQLite version and a command-line interface.
 
 3. **Chrome Browser**: The scraper uses Chrome as the default browser for Selenium.
    Ensure you have Chrome installed on your system.
@@ -65,37 +81,29 @@ Before running the scraper, ensure you have the following installed:
 
    - (https://sites.google.com/a/chromium.org/chromedriver/downloads).
    - After downloading, extract the file and note the path to the chromedriver executable.
-   - Make sure the chromedriver file has executable permissions (on macOS/Linux, run `chmod +x /path/to/chromedriver`).
-   - Update the `CHROMEDRIVER_PATH` variable in `scraper.py` with the path to your chromedriver executable. (Line 23)
+   - Make sure the chromedriver file has executable permissions (on macOS/Linux, run chmod +x /path/to/chromedriver).
 
 5. Clone the repository.
 6. Set up a virtual environment:
-   - MacOS/Linux: `source venv/bin/activate`
-   - Windows: `venv\Scripts\activate`
+   - MacOS/Linux: source venv/bin/activate
+   - Windows: venv\Scripts\activate
 7. Install required packages:
-   - `pip install selenium aiohttp beautifulsoup4 aiolimiter pandas python-dotenv`
-
-## Settin Up Your Environment Variables
-
-1. Create a `.env` file in the root directory of the project.
-2. Add the following environment variables to the `.env` file for email notifications:
-   - `SENDER_EMAIL=your_email@example.com`
-   - `RECIPIENT_EMAIL=recipient_email@example.com`
-   - `SMTP_SERVER=smtp.example.com`
-   - `SMTP_PORT=587`
-   - `SMTP_USERNAME=your_email@example.com`
-   - `SMTP_PASSWORD=your_password`
+   - pip install selenium aiohttp beautifulsoup4 aiolimiter pandas
 
 ## Running the Scraper within the Virtual Environment
 
-```bash
+bash
 python src/main.py
+
+## Exporting Scraped Data to CSV (Only After Running the Scraper)
+
+bash
+python export_to_csv.py
 
 ## Testing the Scraper
 
 1.  Run the tests
     -python -m unittest test/test_scraper.py
-```
 
 ## Customizing the Scraper for a Different Website
 
