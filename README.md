@@ -18,6 +18,11 @@ provides the data backbone you need.
 
 ## ----------QUICK START---------- (Note: Format and Content will need to be Adjusted for each Data Scraping Source Site)
 
+0. Prerequisites:
+   - Python 3.x installed on your system.
+   - SQLite installed on your system.
+   - Chrome browser installed on your system.
+   - ChromeDriver downloaded and path set in the scraper.py file (Line 23)
 1. Clone the repository.
 2. Set up a virtual environment:
    - MacOS/Linux: source venv/bin/activate
@@ -62,6 +67,8 @@ provides the data backbone you need.
 6.  SQLite for storing and managing the extracted data.
 7.  Python's logging module for error logging & debugging.
 8.  Pandas for exporting data to CSV files.
+9.  Python-dotenv for managing environment variables.
+10. Requests for making HTTP requests.
 
 ## Prerequisites
 
