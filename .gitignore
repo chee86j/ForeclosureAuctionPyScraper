@@ -4,7 +4,6 @@ venv/
 # Ignore compiled Python files and cache
 __pycache__/
 *.py[cod]
-*.pyc
 
 # Ignore SQLite database files (if you want to exclude them)
 *.db

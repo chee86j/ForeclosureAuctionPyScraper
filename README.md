@@ -23,7 +23,7 @@ provides the data backbone you need.
    - MacOS/Linux: source venv/bin/activate
    - Windows: venv\Scripts\activate
 3. Install required packages:
-   - pip install selenium aiohttp beautifulsoup4 aiolimiter pandas
+   - pip install selenium aiohttp beautifulsoup4 aiolimiter pandas python-dotenv requests
 4. Run the scraper:
    - python src/main.py
 5. Export the scraped data to CSV:
@@ -88,7 +88,7 @@ Before running the scraper, ensure you have the following installed:
    - MacOS/Linux: source venv/bin/activate
    - Windows: venv\Scripts\activate
 7. Install required packages:
-   - pip install selenium aiohttp beautifulsoup4 aiolimiter pandas
+   - pip install selenium aiohttp beautifulsoup4 aiolimiter pandas python-dotenv requests
 
 ## Running the Scraper within the Virtual Environment
 
