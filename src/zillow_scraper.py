@@ -37,12 +37,20 @@ def parse_zillow_page(url):
 
 def parse_zillow_details(soup):
     details = {}
-    zestimate_text = soup.find('span', {'data-testid': 'zestimate-text'})
-    rent_zestimate = zestimate_text.get_text(strip=True) if zestimate_text else "Not available"
+    
+    # Extracting Zestimate
+    zestimate_span = soup.find('span', {'data-testid': 'zestimate-text'})
+    if zestimate_span:
+        zestimate = zestimate_span.find('span').get_text(strip=True)
+        details['zestimate'] = zestimate
+    else:
+        details['zestimate'] = "Not available"
+    
+    # Extracting bed, bath, and sqft
     bed_bath_sqft = soup.find('span', {'data-testid': 'bed-bath-beyond'})
     bed_bath_sqft_text = bed_bath_sqft.get_text(strip=True) if bed_bath_sqft else "Not available"
-    details['rent_zestimate'] = rent_zestimate
     details['bed_bath_sqft'] = bed_bath_sqft_text
+    
     return details
 
 def parse_tax_history(soup):
@@ -63,12 +71,14 @@ def parse_tax_history(soup):
 
 def parse_property_details(soup):
     details = {}
-    detail_div = soup.find('div', class_='hdp__sc-1j01zad-0 hGwlRq')
-    if detail_div:
-        lot_size = detail_div.find('span', text="Lot:").find_next('span').get_text(strip=True)
-        property_type = detail_div.find('span', text="Type:").find_next('span').get_text(strip=True)
-        details['lot_size'] = lot_size
+    
+    property_type_span = soup.find('span', string="Type:")
+    if property_type_span:
+        property_type = property_type_span.find_next('span').get_text(strip=True)
         details['property_type'] = property_type
+    else:
+        details['property_type'] = "Not available"
+        
     return details
 
 # Example usage
