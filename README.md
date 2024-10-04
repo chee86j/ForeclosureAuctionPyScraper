@@ -23,6 +23,7 @@ provides the data backbone you need.
    - SQLite installed on your system.
    - Chrome browser installed on your system.
    - ChromeDriver downloaded and path set in the scraper.py file (Line 23)
+   - Execute ChromeDriver
 1. Clone the repository.
 2. Set up a virtual environment:
    - MacOS/Linux: source venv/bin/activate
@@ -86,7 +87,7 @@ Before running the scraper, ensure you have the following installed:
 
 4. **ChromeDriver**: Download the ChromeDriver that matches your Chrome version:
 
-   - (https://sites.google.com/a/chromium.org/chromedriver/downloads).
+   - (https://googlechromelabs.github.io/chrome-for-testing/). Match with your OS
    - After downloading, extract the file and note the path to the chromedriver executable.
    - Make sure the chromedriver file has executable permissions (on macOS/Linux, run chmod +x /path/to/chromedriver).
 
