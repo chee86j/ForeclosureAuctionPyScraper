@@ -1,22 +1,29 @@
-import requests
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import logging
 
 # Configure logging
 logging.basicConfig(filename='scraper.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
-def fetch_page_requests(url):
-    """Fetch page content using requests."""
+def fetch_page_selenium_headless(url):
+    """Fetch page content using Selenium in headless mode."""
     try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raises an HTTPError for bad responses
-        return response.text
-    except requests.RequestException as e:
-        logging.error(f"Error fetching {url} with requests: {e}")
+        options = Options()
+        options.headless = True
+        service = Service(executable_path='/Users/jchee/Downloads/chromedriver-mac-x64/chromedriver')
+        driver = webdriver.Chrome(service=service, options=options)
+        driver.get(url)
+        html = driver.page_source
+        driver.quit()
+        return html
+    except Exception as e:
+        logging.error(f"Error fetching {url} with Selenium headless: {e}")
         return None
 
 def parse_zillow_page(url):
-    html = fetch_page_requests(url)
+    html = fetch_page_selenium_headless(url)
     if html:
         soup = BeautifulSoup(html, 'html.parser')
         return {
