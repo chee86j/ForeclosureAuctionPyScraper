@@ -2,7 +2,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
+import pandas as pd
 import logging
+import sys
 
 # Configure logging
 logging.basicConfig(filename='scraper.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
@@ -27,6 +29,7 @@ def parse_zillow_page(url):
     if html:
         soup = BeautifulSoup(html, 'html.parser')
         return {
+            'url': url,
             'zillow_details': parse_zillow_details(soup),
             'tax_history': parse_tax_history(soup),
             'property_details': parse_property_details(soup)
@@ -35,22 +38,24 @@ def parse_zillow_page(url):
         logging.error("No HTML content returned")
         return {}
 
+def export_data_to_csv(data, csv_file):
+    """Export parsed data to a CSV file."""
+    try:
+        df = pd.DataFrame(data)
+        df.to_csv(csv_file, index=False)
+        logging.info(f"Data exported to {csv_file} successfully.")
+    except Exception as e:
+        logging.error(f"Error exporting data to {csv_file}: {e}")
+
 def parse_zillow_details(soup):
     details = {}
     
     # Extracting Zestimate
     zestimate_span = soup.find('span', {'data-testid': 'zestimate-text'})
-    if zestimate_span:
-        zestimate = zestimate_span.find('span').get_text(strip=True)
-        details['zestimate'] = zestimate
-    else:
-        details['zestimate'] = "Not available"
-    
+    details['zestimate'] = zestimate_span.find('span').get_text(strip=True) if zestimate_span else "Not available"
     # Extracting bed, bath, and sqft
     bed_bath_sqft = soup.find('span', {'data-testid': 'bed-bath-beyond'})
-    bed_bath_sqft_text = bed_bath_sqft.get_text(strip=True) if bed_bath_sqft else "Not available"
-    details['bed_bath_sqft'] = bed_bath_sqft_text
-    
+    details['bed_bath_sqft'] = bed_bath_sqft.get_text(strip=True) if bed_bath_sqft else "Not available"
     return details
 
 def parse_tax_history(soup):
@@ -70,19 +75,30 @@ def parse_tax_history(soup):
     return tax_history
 
 def parse_property_details(soup):
-    details = {}
-    
     property_type_span = soup.find('span', string="Type:")
-    if property_type_span:
-        property_type = property_type_span.find_next('span').get_text(strip=True)
-        details['property_type'] = property_type
-    else:
-        details['property_type'] = "Not available"
-        
-    return details
+    property_type = property_type_span.find_next('span').get_text(strip=True) if property_type_span else "Not available"
+    return {'property_type': property_type}
 
-# Example usage
 if __name__ == "__main__":
-    url = "https://www.zillow.com/homes/21-Crimson-Lane-Mine-Hill-NJ-07803_rb/"
-    data = parse_zillow_page(url)
-    print(data)
+    if len(sys.argv) > 1:
+        urls = sys.argv[1:]  # Taking multiple URLs from command-line arguments
+        results = []
+        for url in urls:
+            try:
+                data = parse_zillow_page(url)
+                if data:
+                    results.append(data)
+                    logging.info(f"Successfully parsed data for {url}")
+                else:
+                    logging.warning(f"No data returned for {url}")
+            except Exception as e:
+                logging.error(f"Failed to process {url} with error {e}")
+        if results:
+            export_data_to_csv(results, 'exported_zillow_data.csv')
+        else:
+            logging.warning("No data to export.")
+    else:
+        logging.error("No URLs provided. Usage: python zillow_scraper.py <url1> <url2> ...")
+        sys.exit("Usage: python zillow_scraper.py <url1> <url2> ...")
+
+#   Run this script: `python src/zillow_scraper.py ZillowURL`
