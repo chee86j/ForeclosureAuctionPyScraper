@@ -26,14 +26,16 @@ provides the data backbone you need.
    - Execute ChromeDriver
 1. Clone the repository.
 2. Set up a virtual environment:
-   - MacOS/Linux: source venv/bin/activate
-   - Windows: venv\Scripts\activate
+   - MacOS/Linux: `source venv/bin/activate`
+   - Windows: `python -m venv venv` 
+              `.\venv\Scripts\activate`
+              Note: You may need to adjust your powershell's execution policy by running `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 3. Install required packages:
-   - pip install selenium aiohttp beautifulsoup4 aiolimiter pandas python-dotenv requests
+   - `pip install selenium aiohttp beautifulsoup4 aiolimiter pandas python-dotenv requests googlesearch-python`
 4. Run the scraper:
-   - python src/main.py
+   - `python src/main.py`
 5. Export the scraped data to CSV:
-   - python export_to_csv.py
+   - `python export_to_csv.py`
 
 ---
 
@@ -94,7 +96,9 @@ Before running the scraper, ensure you have the following installed:
 5. Clone the repository.
 6. Set up a virtual environment:
    - MacOS/Linux: source venv/bin/activate
-   - Windows: venv\Scripts\activate
+   - Windows: `python -m venv venv` 
+              `.\venv\Scripts\activate`
+              Note: You may need to adjust your powershell's execution policy by running `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 7. Install required packages:
    - pip install selenium aiohttp beautifulsoup4 aiolimiter pandas python-dotenv requests
 
