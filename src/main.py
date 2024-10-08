@@ -3,10 +3,21 @@ import os
 import logging
 from scraper.scraper import parse_page_selenium
 from db.database import connect_db, create_table, insert_data, close_db
-from utils.export_to_csv import export_to_csv
+from utils.export_to_csv import export_data_to_csv  # Importing the correct function from utils
+import pandas as pd
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
+def format_zillow_url(address):
+    """Convert the address to a Zillow URL format."""
+    try:
+        formatted_address = address.replace(" ", "-").replace(",", "")
+        zillow_url = f"https://www.zillow.com/homes/{formatted_address}_rb/"
+        return zillow_url
+    except Exception as e:
+        logging.error(f"Error formatting Zillow URL for {address}: {e}")
+        return None
 
 def main():
     url = "https://salesweb.civilview.com/Sales/SalesSearch?countyId=9&page=1"
@@ -34,11 +45,39 @@ def main():
         db_path = "auction_data.db"
         csv_file_path = "exported_data.csv"
         
-        # Export data to CSV
-        export_to_csv(db_path, csv_file_path)
+        # Export data to CSV using the imported function from utils
+        export_data_to_csv(db_path, csv_file_path)
         print(f"The data has been successfully exported to {csv_file_path}")
     else:
         print("Export to CSV skipped.")
+
+    # Generate Zillow URLs for the addresses in the exported data
+    user_input = input("Do you want to generate Zillow URLs for the addresses in the exported CSV? (yes/no): ").strip().lower()
+    if user_input == "yes":
+        try:
+            data = pd.read_csv(csv_file_path)
+            addresses = data['address'].tolist()
+            
+            results = []
+            for address in addresses:
+                zillow_url = format_zillow_url(address)
+                if zillow_url:
+                    results.append({'address': address, 'Zillow URL': zillow_url})
+                    logging.info(f"Successfully formatted URL for {address}")
+                else:
+                    logging.warning(f"Failed to format URL for {address}")
+
+            # Export results to CSV using a locally defined function
+            csv_file_path_zillow = 'exported_zillow_urls.csv'
+            pd.DataFrame(results).to_csv(csv_file_path_zillow, index=False)
+            logging.info(f"Zillow URLs have been successfully exported to {csv_file_path_zillow}")
+            print(f"Zillow URLs have been successfully exported to {csv_file_path_zillow}")
+            
+        except Exception as e:
+            logging.error(f"Failed to process addresses for Zillow URL generation: {e}")
+            sys.exit(f"Failed to process addresses for Zillow URL generation: {e}")
+    else:
+        print("Zillow URL generation skipped.")
 
 if __name__ == "__main__":
     main()
