@@ -27,38 +27,38 @@ provides the data backbone you need.
 1. Clone the repository.
 2. Set up a virtual environment:
    - MacOS/Linux: `source venv/bin/activate`
-   - Windows: `python -m venv venv` 
-              `.\venv\Scripts\activate`
-              Note: You may need to adjust your powershell's execution policy by running `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+   - Windows: `python -m venv venv`
+     `.\venv\Scripts\activate`
+     Note: You may need to adjust your powershell's execution policy by running `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 3. Install required packages:
    - `pip install selenium aiohttp beautifulsoup4 aiolimiter pandas python-dotenv requests googlesearch-python`
 4. Run the scraper:
    - `python src/main.py`
 5. Export the scraped data to CSV:
    - `python export_to_csv.py`
+6. Add Zillow URLs to the Addresses:
+   - Run the Zillow URL formatter to generate Zillow URLs for the scraped addresses:
+     `python src/format_zillow_url.py exported_data.csv`
+7. Run the Zillow Scraper:
+   - `python src/zillow_scraper.py`
+8. Merge the Zillow Data with the Foreclosure Data:
+   - Merge the Zillow URLs with the auction data:
+     `python src/merge_data.py exported_data.csv exported_zillow_urls.csv`
+   - This generates `final_merged_data.csv` containing both auction and Zillow data.
 
 ---
 
 ## Key Features
 
-1.  **Reliable Data Extraction**: Automatically scrapes detailed auction data
-    including case numbers, sale dates, property addresses, and status.
-2.  **Efficient Pagination Handling**: Capable of navigating through multiple pages
-    to collect all available listings.
-3.  **Detailed Data Access**: Fetches additional details from each listing's
-    'Details'
-    page, extracting specific information like attorney and plaintiff names.
-4.  **Advanced Web Scraping with Selenium**: Uses Selenium to handle complex web
-    interactions and dynamic content loading, ensuring accurate data extraction even
-    from JavaScript-heavy sites.
-5.  **Easy to Set Up and Use**: Quick setup process and straightforward commands
-    to get the data you need.
-6.  **Efficient Data Storage**: Utilizes SQLite, a lightweight database solution,
-    to store and manage the extracted data efficiently.
-7.  **Export Data to CSV**: Easily export the scraped data from the SQLite database
-    to a CSV file for further analysis or reporting.
-8.  **Customizable and Expandable**: Designed with modularity in mind, allowing
-    for easy updates and customization to cater to specific user needs.
+1.  **Reliable Data Extraction**: Automatically scrapes detailed auction data including case numbers, sale dates, property addresses, and status.
+2.  **Efficient Pagination Handling**: Capable of navigating through multiple pages to collect all available listings.
+3.  **Detailed Data Access**: Fetches additional details from each listing's 'Details' page, extracting specific information like attorney and plaintiff names.
+4.  **Advanced Web Scraping with Selenium**: Uses Selenium to handle complex web interactions and dynamic content loading, ensuring accurate data extraction even from JavaScript-heavy sites.
+5.  **Easy to Set Up and Use**: Quick setup process and straightforward commands to get the data you need.
+6.  **Efficient Data Storage**: Utilizes SQLite, a lightweight database solution, to store and manage the extracted data efficiently.
+7.  **Export Data to CSV**: Easily export the scraped data from the SQLite database to a CSV file for further analysis or reporting.
+8.  **Customizable and Expandable**: Designed with modularity in mind, allowing for easy updates and customization to cater to specific user needs.
+9.  **Zillow URL Generation**: Automatically generates Zillow URLs for each property address and merges this information with foreclosure data, providing enriched details for each listing.
 
 ## Technologies & Libraries
 
@@ -81,41 +81,45 @@ Before running the scraper, ensure you have the following installed:
 2. **SQLite**: Make sure SQLite is installed on your system:
 
    - [SQLite Download page](https://sqlite.org/download.html) and follow the installation instructions.
-     Look under'Precompiled Binaries for Windows' for the [DLL]
+     Look under 'Precompiled Binaries for Windows' for the [DLL]
    - Verify installation by running sqlite3 in your terminal. If installed, you should see the SQLite version and a command-line interface.
 
-3. **Chrome Browser**: The scraper uses Chrome as the default browser for Selenium.
-   Ensure you have Chrome installed on your system.
+3. **Chrome Browser**: The scraper uses Chrome as the default browser for Selenium. Ensure you have Chrome installed on your system.
 
 4. **ChromeDriver**: Download the ChromeDriver that matches your Chrome version:
 
-   - (https://googlechromelabs.github.io/chrome-for-testing/). Match with your OS
+   - [ChromeDriver Download Page](https://googlechromelabs.github.io/chrome-for-testing/). Match with your OS.
    - After downloading, extract the file and note the path to the chromedriver executable.
-   - Make sure the chromedriver file has executable permissions (on macOS/Linux, run chmod +x /path/to/chromedriver).
+   - Make sure the chromedriver file has executable permissions (on macOS/Linux, run `chmod +x /path/to/chromedriver`).
 
 5. Clone the repository.
 6. Set up a virtual environment:
-   - MacOS/Linux: source venv/bin/activate
-   - Windows: `python -m venv venv` 
-              `.\venv\Scripts\activate`
-              Note: You may need to adjust your powershell's execution policy by running `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+   - MacOS/Linux: `source venv/bin/activate`
+   - Windows: `python -m venv venv`
+     `.\env\Scripts\activate`
+     Note: You may need to adjust your powershell's execution policy by running `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 7. Install required packages:
-   - pip install selenium aiohttp beautifulsoup4 aiolimiter pandas python-dotenv requests
+   - `pip install selenium aiohttp beautifulsoup4 aiolimiter pandas python-dotenv requests`
 
 ## Running the Scraper within the Virtual Environment
 
-bash
+```bash
 python src/main.py
+```
 
 ## Exporting Scraped Data to CSV (Only After Running the Scraper)
 
-bash
+```bash
 python export_to_csv.py
+```
 
 ## Testing the Scraper
 
 1.  Run the tests
-    -python -m unittest test/test_scraper.py
+
+```bash
+python -m unittest test/test_scraper.py
+```
 
 ## Customizing the Scraper for a Different Website
 
