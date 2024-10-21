@@ -5,6 +5,7 @@ from scraper.scraper import parse_page_selenium
 from db.database import connect_db, create_table, insert_data, close_db
 from utils.export_to_csv import export_data_to_csv  # Importing the correct function from utils
 import pandas as pd
+from merge_csv import merge_csv_files  # Import the merge_csv functionality
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
@@ -20,8 +21,8 @@ def format_zillow_url(address):
         return None
 
 def main():
+    # Step 1: Scrape auction data
     url = "https://salesweb.civilview.com/Sales/SalesSearch?countyId=9&page=1"
-
     logging.info(f"Starting to scrape the page: {url}")
     
     data = parse_page_selenium(url)
@@ -39,7 +40,7 @@ def main():
         logging.warning("No data scraped.")
         return  # Exit if no data was scraped
     
-    # Ask the user if they want to export data to CSV
+    # Step 2: Export scraped data to CSV
     user_input = input("Do you want to export the data to CSV? (yes/no): ").strip().lower()
     if user_input == "yes":
         db_path = "auction_data.db"
@@ -51,7 +52,7 @@ def main():
     else:
         print("Export to CSV skipped.")
 
-    # Generate Zillow URLs for the addresses in the exported data
+    # Step 3: Generate Zillow URLs for the addresses in the exported data
     user_input = input("Do you want to generate Zillow URLs for the addresses in the exported CSV? (yes/no): ").strip().lower()
     if user_input == "yes":
         try:
@@ -67,7 +68,7 @@ def main():
                 else:
                     logging.warning(f"Failed to format URL for {address}")
 
-            # Export results to CSV using a locally defined function
+            # Export Zillow URL results to CSV
             csv_file_path_zillow = 'exported_zillow_urls.csv'
             pd.DataFrame(results).to_csv(csv_file_path_zillow, index=False)
             logging.info(f"Zillow URLs have been successfully exported to {csv_file_path_zillow}")
@@ -78,6 +79,17 @@ def main():
             sys.exit(f"Failed to process addresses for Zillow URL generation: {e}")
     else:
         print("Zillow URL generation skipped.")
+
+    # Step 4: Merge the auction data with the Zillow URLs
+    user_input = input("Do you want to merge the auction data with the Zillow URLs? (yes/no): ").strip().lower()
+    if user_input == "yes":
+        try:
+            merge_csv_files(csv_file_path, csv_file_path_zillow)
+        except Exception as e:
+            logging.error(f"Failed to merge files: {e}")
+            sys.exit(f"Failed to merge files: {e}")
+    else:
+        print("Merging auction data and Zillow URLs skipped.")
 
 if __name__ == "__main__":
     main()
