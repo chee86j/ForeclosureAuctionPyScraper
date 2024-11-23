@@ -94,7 +94,7 @@ Before running the scraper, ensure you have the following installed:
 
 5. Clone the repository.
 6. Set up a virtual environment:
-   - MacOS/Linux: `source venv/bin/activate`
+   - MacOS/Linux: `source venv/bin/activate` _If needed you can deactivate the virtual environment by running `deactivate`_
    - Windows: `python -m venv venv`
      `.\env\Scripts\activate`
      Note: You may need to adjust your powershell's execution policy by running `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
