@@ -54,21 +54,34 @@ def parse_page_selenium(url):
         rows = table.find('tbody').find_all('tr') if table.find('tbody') else []
         for row in rows:
             cells = row.find_all('td')
-            row_data = {
-                'detail_link': f"https://salesweb.civilview.com{cells[0].find('a')['href']}" if cells[0].find('a') else 'No link provided',
-                'sheriff_number': cells[1].text.strip() if len(cells) > 1 else None,
-                'status_date': convert_date_format(cells[2].text.strip()) if len(cells) > 2 else None,
-                'plaintiff': cells[3].text.strip() if len(cells) > 3 else None,
-                'defendant': cells[4].text.strip() if len(cells) > 4 else None,
-                'address': cells[5].text.strip() if len(cells) > 5 else None,
-                'price': int(cells[6].text.strip().replace('$', '').replace(',', '')) if len(cells) > 6 else 0
-            }
-            data.append(row_data)
-        
+            try:
+                # Extract the PropertyId from the correct <a> tag
+                detail_link = cells[0].find('a')['href']
+                property_id = detail_link.split("PropertyId=")[-1]  # Extract PropertyId for validation
+                full_detail_link = f"https://salesweb.civilview.com{detail_link}" if detail_link else 'No link provided'
+
+                # Ensure the PropertyId is correct and associated with the row
+                row_data = {
+                    'detail_link': full_detail_link,
+                    'property_id': property_id,
+                    'sheriff_number': cells[1].text.strip() if len(cells) > 1 else None,
+                    'status_date': convert_date_format(cells[2].text.strip()) if len(cells) > 2 else None,
+                    'plaintiff': cells[3].text.strip() if len(cells) > 3 else None,
+                    'defendant': cells[4].text.strip() if len(cells) > 4 else None,
+                    'address': cells[5].text.strip() if len(cells) > 5 else None,
+                    'price': int(cells[6].text.strip().replace('$', '').replace(',', '')) if len(cells) > 6 else 0
+                }
+                data.append(row_data)
+
+            except Exception as e:
+                logging.error(f"Error parsing row: {e}")
+                continue
+
         return data
     else:
         logging.error("No HTML content returned")
         return []
+
 
 def convert_date_format(date_str):
     """Convert date string from 'MM/DD/YYYY' to 'YYYY-MM-DD' if needed."""
