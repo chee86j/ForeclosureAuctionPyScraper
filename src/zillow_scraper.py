@@ -14,7 +14,8 @@ def fetch_page_selenium_headless(url):
     try:
         options = Options()
         options.headless = True
-        service = Service(executable_path='/Users/jchee/Downloads/chromedriver-mac-x64/chromedriver')
+        # service = Service(executable_path='/Users/jchee/Downloads/chromedriver-mac-x64/chromedriver')
+        service = Service(executable_path='C:\\chromedriver-win64\\chromedriver.exe')
         driver = webdriver.Chrome(service=service, options=options)
         driver.get(url)
         html = driver.page_source

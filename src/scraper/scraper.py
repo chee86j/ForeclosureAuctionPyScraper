@@ -19,8 +19,10 @@ def fetch_page_selenium(url):
     chrome_options.add_argument("--disable-gpu")  # Disable GPU acceleration
     chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
     
-    # Replace '/path/to/chromedriver' with the actual path to your ChromeDriver
-    service = Service(executable_path='/Users/jchee/Downloads/chromedriver-mac-x64/chromedriver')  # Update this path
+    # Replace with the actual path to your ChromeDriver
+    service = Service(executable_path='C:\\chromedriver-win64\\chromedriver.exe')
+    # service = Service(executable_path='/Users/jchee/Downloads/chromedriver-mac-x64/chromedriver')  # Update this path
+
 
     # Initialize the WebDriver
     driver = webdriver.Chrome(service=service, options=chrome_options)
@@ -28,7 +30,6 @@ def fetch_page_selenium(url):
     try:
         driver.get(url)
         time.sleep(3)  # Wait for the page to fully load
-
         html_content = driver.page_source
         logging.debug(f"Fetched HTML for {url}: {html_content[:5000]}")  # Log first 5000 characters of HTML
         return html_content
@@ -41,7 +42,7 @@ def fetch_page_selenium(url):
         driver.quit()
 
 def parse_page_selenium(url):
-    """Parse page using Selenium."""
+    """Parse page content to extract required data."""
     html = fetch_page_selenium(url)
     if html:
         soup = BeautifulSoup(html, 'html.parser')
@@ -52,15 +53,19 @@ def parse_page_selenium(url):
 
         data = []
         rows = table.find('tbody').find_all('tr') if table.find('tbody') else []
+
         for row in rows:
             cells = row.find_all('td')
             try:
-                # Extract the PropertyId from the correct <a> tag
-                detail_link = cells[0].find('a')['href']
-                property_id = detail_link.split("PropertyId=")[-1]  # Extract PropertyId for validation
-                full_detail_link = f"https://salesweb.civilview.com{detail_link}" if detail_link else 'No link provided'
+                # Extract the PropertyId and construct the full detail link
+                detail_link = cells[0].find('a', href=True)['href']
+                if "PropertyId=" not in detail_link:
+                    raise ValueError("Invalid detail link: Missing 'PropertyId'")
+                
+                property_id = detail_link.split("PropertyId=")[-1]
+                full_detail_link = f"https://salesweb.civilview.com{detail_link}"
 
-                # Ensure the PropertyId is correct and associated with the row
+                # Extract other data for the row
                 row_data = {
                     'detail_link': full_detail_link,
                     'property_id': property_id,
@@ -71,6 +76,7 @@ def parse_page_selenium(url):
                     'address': cells[5].text.strip() if len(cells) > 5 else None,
                     'price': int(cells[6].text.strip().replace('$', '').replace(',', '')) if len(cells) > 6 else 0
                 }
+
                 data.append(row_data)
 
             except Exception as e:
@@ -81,7 +87,6 @@ def parse_page_selenium(url):
     else:
         logging.error("No HTML content returned")
         return []
-
 
 def convert_date_format(date_str):
     """Convert date string from 'MM/DD/YYYY' to 'YYYY-MM-DD' if needed."""

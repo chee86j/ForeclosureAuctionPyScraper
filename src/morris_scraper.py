@@ -42,7 +42,8 @@ def fetch_page_selenium(search_query):
     chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
     
     # Update the path to your ChromeDriver
-    service = Service(executable_path='/Users/jchee/Downloads/chromedriver-mac-x64/chromedriver')  # Update this path as needed
+    service = Service(executable_path='C:\\chromedriver-win64\\chromedriver.exe')
+    # service = Service(executable_path='/Users/jchee/Downloads/chromedriver-mac-x64/chromedriver')  # Update this path as needed
 
     # Initialize WebDriver
     driver = webdriver.Chrome(service=service, options=chrome_options)
